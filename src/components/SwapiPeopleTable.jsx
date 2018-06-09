@@ -12,8 +12,7 @@ import axios from "axios";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import TableHead from '@material-ui/core/TableHead';
 import TablePaginationActionsWrapped from './PaginationActions'
-import SimpleDialogWrapped from './SimpleDialog'
-import Button from "@material-ui/core/Button";
+import Chip from "@material-ui/core/Chip";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = theme => ({
@@ -41,6 +40,7 @@ class SwapiPeopleTable extends React.Component {
                     people: [],
                     isBusy: false,
                     isBusyHw: false,
+                    isBusyFilms: false,
                     url: '',
                     page: 0,
                     rowsPerPage: 10,
@@ -78,11 +78,13 @@ class SwapiPeopleTable extends React.Component {
                     }
 
                 updateHomeworld(p){
+                  this.setState({isBusyHw: true})
                   axios.get(p.homeworld).then(response => {
                     const data = response.data
                     const peopleIndex = this.state.people.indexOf(p)
                     this.state.people[peopleIndex].homeworld = data;
                     this.forceUpdate()
+                    this.setState({isBusyHw: false})
                   });
                 }
 
@@ -186,31 +188,31 @@ class SwapiPeopleTable extends React.Component {
                                <TableCell>
                                  {!n.homeworld.name ? <CircularProgress /> : n.homeworld.name}
                                </TableCell>
-                               <TableCell>
+                               <TableCell>                                 
                                  <ul>
                                    {n.films.map(f => {
-                                     return !f.title ? <CircularProgress /> : <li>{f.title}</li>;
+                                     return !f.title ? <CircularProgress /> : <Chip clickable label={f.title} />;
                                    })}
                                  </ul>
                                </TableCell>
                                <TableCell>
                                  <ul>
                                    {n.species.map(s => {
-                                     return !s.name ? <CircularProgress /> : <li>{s.name}</li>;
+                                     return !s.name ? <CircularProgress /> : <Chip clickable label={s.name} />;
                                    })}
                                  </ul>
                                </TableCell>
                                <TableCell>
                                  <ul>
                                    {n.vehicles.map(v => {
-                                     return !v.name ? <CircularProgress /> : <li>{v.name}</li>;
+                                     return !v.name ? <CircularProgress /> : <Chip clickable label={v.name} />;
                                    })}
                                  </ul>
                                </TableCell>
                                <TableCell>
                                  <ul>
                                    {n.starships.map(s => {
-                                     return !s.name ? <CircularProgress /> : <li>{s.name}</li>;
+                                     return !s.name ? <CircularProgress /> : <Chip clickable label={s.name} />;
                                    })}
                                  </ul>
                                </TableCell>
@@ -226,10 +228,7 @@ class SwapiPeopleTable extends React.Component {
                        </Table>
                        {this.state.isBusy ? <LinearProgress /> : null}
                      </Paper>
-                     <SimpleDialogWrapped
-                       selectedValue={this.state.selectedValue}
-                       open={this.state.open}
-                       onClose={this.handleClose} />
+                     
                    </div>
                  }
                }
