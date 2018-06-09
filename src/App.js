@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import SwapiPeopleTable from './components/SwapiPeopleTable.jsx'
-import { Grid } from '@material-ui/core';
 
 class App extends Component {
   render() {
