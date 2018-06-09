@@ -23,43 +23,40 @@ const actionsStyles = theme => ({
     // }
     constructor(props) {
       super(props);
-      this.state = {
-        page: props.page
-        };
     }
     handleFirstPageButtonClick = event => {
-      this.props.onChangePage(event, 1);
+      this.props.onChangePage(event, 0);
     };
-  
+
     handleBackButtonClick = event => {
-      this.props.onChangePage(event, this.state.page - 1);
+      this.props.onChangePage(event, this.props.page - 1);
     };
-  
+
     handleNextButtonClick = event => {
-      this.props.onChangePage(event, this.state.page + 1);
+      this.props.onChangePage(event, this.props.page + 1);
     };
-  
-    handleLastPageButtonClick = event => {
+
+    handleLastPageButtonClick = event => {      
       this.props.onChangePage(
         event,
-        Math.max(0, Math.ceil(this.state.count / this.state.rowsPerPage) - 1),
+        Math.max(0, Math.ceil(this.props.count / 10) - 1),
       );
     };
   
     render() {
-      const { count, page, rowsPerPage } = this.props;
+      const { count, page, rowsPerPage} = this.props;
       return (
         <div className={actionsStyles.root}>
           <IconButton
             onClick={this.handleFirstPageButtonClick}
-            disabled={page === 1}
+            disabled={page === 0}
             aria-label="First Page"
           >
           <FirstPageIcon />
           </IconButton>
           <IconButton
             onClick={this.handleBackButtonClick}
-            disabled={page === 1}
+            disabled={page === 0}
             aria-label="Previous Page"
           >
           <KeyboardArrowLeft />

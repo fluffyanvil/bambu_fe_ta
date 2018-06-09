@@ -9,6 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import LinearProgress from "@material-ui/core/LinearProgress";
 import TablePagination from '@material-ui/core/TablePagination';
 import TablePaginationActionsWrapped from './TablePaginationActionsWrapped'
+import axios from "axios";
 
 
 const styles = theme => ({
@@ -29,45 +30,49 @@ export default class SwapiPeopleTable extends Component {
                    super(props);
 
                    this.state = {
-                     count: 0,
-                      people: [],
-                      isBusy: false,
-                      prevPeople: '',
-                      nextPeople: '',
-                      page: 1,
-                      rowsPerPage: 10
-                     };
+                    count: 0,
+                    people: [],
+                    isBusy: false,
+                    url: '',
+                    page: 0,
+                    rowsPerPage: 10
+                  };
                  }
-                 componentDidMount() {
+                 componentWillMount() {
                   this.updatePeople()
                  }
                  updatePeople(){
-                  this.setState({isBusy: true})
-              
-                   fetch(peopleUrl + '?page=' + this.state.page)
-                     .then(response => response.json())
-                     .then(data => {                       
+                   this.setState({isBusy: true})
+                   const swapiPage = this.state.page + 1
+                   console.log(swapiPage);
+                   
+                   axios.get(peopleUrl, {
+                     params: {
+                       page: swapiPage
+                     }
+                   })
+                     .then(response => {
+                       const data = response.data  
                        this.setState({
-                          people: data.results,
-                          isBusy: false,
-                          prevPeople: data.previous,
-                          nextPeople: data.next,
-                          count: data.count
-                       })
+                         count: data.count,
+                         people: data.results,
+                         isBusy: false
+                       });
                      });
-                 }
+                    }
 
-                 handleChangePage = (event, page) => {
-                  this.setState({ page: page });
-                  this.updatePeople()
+                handleChangePage = (event, page) => {
+                  this.setState({ page: page }, p => {
+                    this.updatePeople();           
+                  })
                 };
               
                 handleChangeRowsPerPage = event => {
-                  this.setState({ rowsPerPage: event.target.value });
+                  this.setState({ rowsPerPage: 10 }, p => { });
                 };
 
                  render() {
-                   const { people } = this.state;
+                   const { people, page, rowsPerPage, count } = this.state;
                    return <Paper className={styles.root}>
                        <Table className={styles.table}>
                          <TableHead>
@@ -113,14 +118,15 @@ export default class SwapiPeopleTable extends Component {
                           <TableRow>
                             <TablePagination
                               colSpan={3}
-                              count={this.state.count}
-                              rowsPerPage={this.state.rowsPerPage}
-                              page={this.state.page}
+                              count={count}
+                              rowsPerPage={rowsPerPage}
+                              page={page}
                               onChangePage={this.handleChangePage}
                               ActionsComponent={TablePaginationActionsWrapped}
                               onChangeRowsPerPage={this.handleChangeRowsPerPage}
                             />
                           </TableRow>
+                          
                         </TableFooter>
                        </Table>
                        
